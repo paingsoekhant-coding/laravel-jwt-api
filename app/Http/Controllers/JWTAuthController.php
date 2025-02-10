@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class JWTAuthController extends Controller
 {
@@ -35,5 +36,17 @@ class JWTAuthController extends Controller
             return "Email & Password does not match!";
         }
         return response()->json(['token' => $token]);
+    }
+
+    public function profile()
+    {
+        $user = JWTAuth::parseToken()->authenticate();
+        return response()->json($user);
+    }
+
+    public function logout()
+    {
+        JWTAuth::invalidate(JWTAuth::getToken());
+        return response()->json(['message' => 'Logout Success.']);
     }
 }
